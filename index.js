@@ -1,28 +1,38 @@
-const { gql, ApolloServer } = require('apollo-server-express');
+const { ApolloServer, AuthenticationError } = require('apollo-server-express');
 const express = require('express');
 const RateLimit = require('express-rate-limit');
 const { graphql } = require('graphql');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+require('dotenv').config();
+
+const app = express();
 
 const rateLimit = new RateLimit({
 	windowMs: 1000,
 	max: 3,
 });
 
-const typeDefs = gql`
-	type Query {
-		hello: String
-	}
-`;
+const typeDefs = require('./typedefs');
+const resolvers = require('./resolvers').resolvers;
+const auth = require('./auth');
 
-const resolvers = {
-	Query: {
-		hello: () => "Hello!",
+app.use(rateLimit);
+app.use(cookieParser());
+app.use('/auth', auth.router);
+
+const server = new ApolloServer({
+	typeDefs,
+	resolvers,
+	context: ({ req }) => {
+		const token = req.headers.authorization || req.cookies.authToken;
+		const user = auth.auth(token);
+
+		return { user };
 	},
-};
+});
 
-const server = new ApolloServer({ typeDefs, resolvers });
-
-const app = express();
 server.applyMiddleware({ app });
 
-app.listen(4000, () => console.log(`Server running at http://localhost:4000${server.graphqlPath}`));
+app.listen(process.env.PORT, () => console.log(`Server running at http://localhost:${process.env.PORT}${server.graphqlPath}`));
