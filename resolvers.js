@@ -1,18 +1,8 @@
 const { AuthenticationError, ApolloError } = require('apollo-server-errors');
-const { Knex } = require('knex');
 const axios = require('axios').default;
-/**
- * @type {Knex}
- */
-const knex = require('knex')({
-	client: 'mysql',
-	connection: {
-		host: process.env.DBHOST,
-		user: process.env.DBUSER,
-		password: process.env.DBPASS,
-		database: process.env.DBNAME,
-	},
-});
+const knex = require('./knex');
+
+const getPlayground = require('./resolvers/getPlayground');
 
 /**
  * @typedef User
@@ -57,65 +47,8 @@ const resolvers = {
 			if (!context.user) return null;
 			return context.user;
 		},
-		playgrounds: async (parent, args, context) => {
-			const result = await knex
-				.select('p.*', 'c.id AS cid', 'c.name AS cname', 'u.id AS uid', 'u.username', 'u.name AS uname', 'u.email AS uemail', 'role AS urole')
-				.from('playgrounds AS p')
-				.join('categories_to_playground AS ctp', 'ctp.playground_id', '=', 'p.id')
-				.join('categories AS c', 'ctp.category_id', '=', 'c.id')
-				.join('users as u', 'u.id', '=', 'p.addedby');
-
-			const data = result.map(p => {
-				return {
-					id: p.id,
-					name: p.name,
-					address: p.address,
-					longtitude: p.longtitude,
-					description: p.description,
-					category: {
-						id: p.cid,
-						name: p.cname,
-					},
-					addedby: {
-						id: p.uid,
-						username: p.username,
-						name: p.uname,
-						role: p.urole,
-						email: p.uemail,
-					},
-				};
-			});
-			return data;
-		},
-		playground: async (parent, args, context) => {
-			const result = (await knex
-				.select('p.*', 'c.id AS cid', 'c.name AS cname', 'u.id AS uid', 'u.username', 'u.name AS uname', 'u.email AS uemail', 'role AS urole')
-				.from('playgrounds AS p')
-				.where('p.id', args.id)
-				.join('categories_to_playground AS ctp', 'ctp.playground_id', '=', 'p.id')
-				.join('categories AS c', 'ctp.category_id', '=', 'c.id')
-				.join('users as u', 'u.id', '=', 'p.addedby'))[0];
-
-			const data = {
-				id: result.id,
-				name: result.name,
-				address: result.address,
-				longtitude: result.longtitude,
-				description: result.description,
-				category: {
-					id: result.cid,
-					name: result.cname,
-				},
-				addedby: {
-					id: result.uid,
-					username: result.username,
-					name: result.uname,
-					role: result.urole,
-					email: result.uemail,
-				},
-			};
-			return data;
-		},
+		playgrounds: getPlayground,
+		playground: getPlayground,
 	},
 	Mutation: {
 		addPlayground: async (parent, args, context) => {
