@@ -121,5 +121,4 @@ const resolveUtils = {
 	},
 };
 
-exports.resolvers = resolvers;
-exports.knex = knex;
+module.exports = resolvers;

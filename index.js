@@ -15,7 +15,7 @@ const rateLimit = new RateLimit({
 });
 
 const typeDefs = require('./typedefs');
-const resolvers = require('./resolvers').resolvers;
+const resolvers = require('./resolvers');
 const auth = require('./auth');
 
 app.use(rateLimit);
