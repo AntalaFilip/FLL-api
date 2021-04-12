@@ -18,6 +18,7 @@ const getPlayground = require('./resolvers/getPlayground');
  * @enum {string}
  */
 const Role = {
+	NONE: "NONE",
 	USER: "USER",
 	MODERATOR: "MODERATOR",
 	ADMIN: "ADMIN",
@@ -30,7 +31,7 @@ const Role = {
  */
 const Permissions = {
 	READ: {
-		playgrounds: [Role.USER, Role.MODERATOR, Role.ADMIN, Role.SYSTEM],
+		playgrounds: [Role.NONE, Role.USER, Role.MODERATOR, Role.ADMIN, Role.SYSTEM],
 	},
 	MODIFY: {
 
