@@ -2,6 +2,8 @@ const { AuthenticationError, ApolloError } = require('apollo-server-errors');
 const axios = require('axios').default;
 const knex = require('./knex');
 
+const { resolveUtils } = require('./utils');
+
 const getPlayground = require('./resolvers/getPlayground');
 
 /**
@@ -108,19 +110,4 @@ const resolvers = {
 		},
 	},
 };
-
-const resolveUtils = {
-	/**
-	 *
-	 * @param {Object} object
-	 * @param {string} table
-	 * @returns {any | false}
-	 */
-	exists: async (object, table) => {
-		const exists = await knex.select().from(table).where(object);
-		if (exists.length > 0) return exists[0];
-		else return false;
-	},
-};
-
 module.exports = resolvers;
