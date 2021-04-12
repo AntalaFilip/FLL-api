@@ -76,6 +76,7 @@ const resolvers = {
 			// Push the category listing of the playground into the database
 			await knex.insert({ category_id: ctgId, playground_id: id }).into('categories_to_playground');
 
+			// BUG: doesn't return whole Playground type - should somehow query the Playground using Query.playground(id: id)
 			return (await knex.select().from('playgrounds').where({ id }))[0];
 		},
 		addCategory: async (parent, args, context) => {
