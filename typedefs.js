@@ -18,8 +18,8 @@ const typeDefs = gql`
 	}
 	type Mutation {
 		addPlayground(input: PlaygroundInput!): Playground!,
-		addCategory(name: String): Category,
-		addUser(username: String!, password: String!, name: String!, email: String!, roleId: Int!): User,
+		addCategory(name: String): Category!,
+		addUser(username: String!, password: String!, name: String!, email: String!, roleId: Int!): User!,
 	}
 	type Playground {
 		id: ID!,
