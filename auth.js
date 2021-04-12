@@ -4,13 +4,12 @@ const express = require('express');
 const RateLimit = require('express-rate-limit');
 const knex = require('./knex');
 const fs = require('fs');
-const bodyparser = require('body-parser');
 
 const rateLimit = RateLimit({ windowMs: 5000, max: 5 });
 
 const router = express.Router();
 router.use(rateLimit);
-router.use(bodyparser.json());
+router.use(express.json());
 
 router.post('/login', async (req, res) => {
 	const username = req.body.user;
