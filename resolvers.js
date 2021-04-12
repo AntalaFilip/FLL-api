@@ -39,7 +39,8 @@ const Permissions = {
 
 	},
 	CREATE: {
-		addPlayground: [Role.USER, Role.MODERATOR, Role.ADMIN, Role.SYSTEM],
+		playground: [Role.USER, Role.MODERATOR, Role.ADMIN, Role.SYSTEM],
+		category: [Role.MODERATOR, Role.ADMIN, Role.SYSTEM],
 	},
 };
 
@@ -83,7 +84,7 @@ const resolvers = {
 		},
 		addCategory: async (parent, args, context) => {
 			// Throw error if not authenticated
-			if (!context.user || Permissions.CREATE.addPlayground.includes(context.user.role)) throw new AuthenticationError();
+			if (!context.user || Permissions.CREATE.playground.includes(context.user.role)) throw new AuthenticationError();
 			// Check if category does not exist already
 			const ctgExists = await resolveUtils.exists({ name: args.name }, 'categories');
 			if (ctgExists) throw new ApolloError('A Catergory with this name already exists!', 'OBJALREADYEXISTS');
