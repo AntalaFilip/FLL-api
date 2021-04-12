@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const RateLimit = require('express-rate-limit');
-const knex = require('./resolvers').knex;
+const knex = require('./knex');
 const fs = require('fs');
 const bodyparser = require('body-parser');
 
