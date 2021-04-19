@@ -56,7 +56,8 @@ const resolvers = {
 		playground: getPlayground,
 	},
 	Mutation: {
-		addPlayground: addPlayground,
+		addPlaygroundByAddress: addPlayground,
+		addPlaygroundByCoords: addPlayground,
 		addCategory: async (parent, args, context) => {
 			// Throw error if not authenticated
 			if (!context.user || Permissions.CREATE.playground.includes(context.user.role)) throw new AuthenticationError();
