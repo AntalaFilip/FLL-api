@@ -3,6 +3,7 @@ const express = require('express');
 const RateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const publicIp = require('public-ip');
 require('dotenv').config();
 
 const app = express();
@@ -17,7 +18,7 @@ const resolvers = require('./resolvers');
 const auth = require('./auth');
 
 app.use(cors());
-app.use(rateLimit);
+if (process.env.NODE_ENV !== 'DEVELOPMENT') app.use(rateLimit);
 app.use(cookieParser());
 app.use('/auth', auth.router);
 
@@ -34,4 +35,17 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app });
 
-app.listen(process.env.PORT, () => console.log(`Server running at http://localhost:${process.env.PORT}${server.graphqlPath}`));
+console.log(process.env);
+console.log('Launching Apollo GraphQL Server...');
+console.time('start');
+app.listen(process.env.PORT, async () => {
+	const mode = process.env.NODE_ENV;
+	const ip = await publicIp.v4();
+	const port = process.env.PORT;
+	console.timeLog('start');
+	console.log(`Apollo Server running
+	 in ${mode} mode
+	 at ${mode !== 'DEVELOPMENT' ? `http://${ip}:${port}` : `http://localhost:${port}`}${server.graphqlPath}
+	 on ${process.env.USERNAME}@${process.env.COMPUTERNAME}`);
+});
+global.server = server;
