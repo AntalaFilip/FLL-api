@@ -5,32 +5,59 @@ const typeDefs = gql`
 		hello: String!
 		playgrounds: [Playground!]!
 		playground(id: ID!): Playground
+		categories: [Category!]!
+		category(id: ID!): Category
 		me: User
 	}
-	input PlaygroundInput {
-		name: String!,
-		address: String!,
-		latitude: Float!,
-		longtitude: Float!,
-		description: String!,
-		# TODO: array of category IDs
-		categoryId: Int!
-	}
 	type Mutation {
-		addPlayground(input: PlaygroundInput!): Playground!,
+		addPlaygroundByAddress(base: PlaygroundBaseInput, location: PlaygroundAddressInput): Playground!,
+		addPlaygroundByCoords(base: PlaygroundBaseInput, location: PlaygroundCoordsInput): Playground!,
 		addCategory(name: String): Category!,
 		addUser(username: String!, password: String!, name: String!, email: String!, roleId: Int!): User!,
 	}
+
+	input PlaygroundBaseInput {
+		name: String!,
+		description: String!,
+		categoryIds: [Int!]!,
+	}
+	input PlaygroundAddressInput {
+		address: String!,
+	}
+	input PlaygroundCoordsInput {
+		latitude: Float!,
+		longtitude: Float!,
+	}
+	
 	type Playground {
 		id: ID!,
 		name: String!,
-		address: String!,
-		longtitude: Float!,
-		latitude: Float!,
+		location: PlaygroundLocation!,
 		description: String!,
-		category: Category!,
+		categories: [Category!]!,
 		addedby: User!,
 	}
+	type PlaygroundLocation {
+		address: Address!,
+		geocoordinates: GeoCoordinates!,
+		plus_code: String!,
+		place_id: String!,
+	}
+	type Address {
+		formatted: String!,
+		street_num: Int,
+		route: String,
+		sublocality: String,
+		admin_area_1: String,
+		admin_area_2: String,
+		country: String,
+		postal_code: String,
+	}
+	type GeoCoordinates {
+		latitude: Float!,
+		longtitude: Float!,
+	}
+	
 	type Category {
 		id: ID!,
 		name: String!,
@@ -42,6 +69,7 @@ const typeDefs = gql`
 		email: String,
 		role: UserRole!,
 	}
+
 	enum UserRole {
 		SYSTEM
 		ADMIN
