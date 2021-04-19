@@ -1,10 +1,8 @@
-const { ApolloServer, AuthenticationError } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
 const RateLimit = require('express-rate-limit');
-const { graphql } = require('graphql');
 const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
-const fs = require('fs');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
@@ -18,6 +16,7 @@ const typeDefs = require('./typedefs');
 const resolvers = require('./resolvers');
 const auth = require('./auth');
 
+app.use(cors());
 app.use(rateLimit);
 app.use(cookieParser());
 app.use('/auth', auth.router);
