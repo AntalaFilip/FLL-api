@@ -35,7 +35,6 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app });
 
-console.log(process.env);
 console.log('Launching Apollo GraphQL Server...');
 console.time('start');
 app.listen(process.env.PORT, async () => {
