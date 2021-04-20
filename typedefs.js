@@ -7,6 +7,8 @@ const typeDefs = gql`
 		playground(id: ID!): Playground
 		categories: [Category!]!
 		category(id: ID!): Category
+		facilities: [Facility!]!
+		facility(id: ID!): Facility
 		me: User
 	}
 	type Mutation {
@@ -59,6 +61,10 @@ const typeDefs = gql`
 	}
 	
 	type Category {
+		id: ID!,
+		name: String!,
+	}
+	type Facility {
 		id: ID!,
 		name: String!,
 	}

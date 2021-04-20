@@ -7,6 +7,7 @@ const { resolveUtils } = require('./utils');
 const getPlayground = require('./resolvers/getPlayground');
 const addPlayground = require('./resolvers/addPlayground');
 const getCategory = require('./resolvers/getCategory');
+const getFacility = require('./resolvers/getFacility');
 
 /**
  * @typedef User
@@ -57,6 +58,8 @@ const resolvers = {
 		playground: getPlayground,
 		categories: getCategory,
 		category: getCategory,
+		facilities: getFacility,
+		facility: getFacility,
 	},
 	Mutation: {
 		addPlaygroundByAddress: addPlayground,

@@ -39,4 +39,11 @@ function categoryDataParser(data) {
 	}));
 }
 
-module.exports = { playgroundDataParser, categoryDataParser };
+function facilityDataParser(data) {
+	return data.map(val => ({
+		id: val.facility_id,
+		name: val.facility_name,
+	}));
+}
+
+module.exports = { playgroundDataParser, categoryDataParser, facilityDataParser };
