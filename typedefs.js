@@ -37,6 +37,7 @@ const typeDefs = gql`
 		location: PlaygroundLocation!,
 		description: String!,
 		categories: [Category!]!,
+		facilities: [Facility!],
 		addedby: User!,
 	}
 	type PlaygroundLocation {
@@ -63,6 +64,7 @@ const typeDefs = gql`
 	type Category {
 		id: ID!,
 		name: String!,
+		facilities: [Facility!],
 	}
 	type Facility {
 		id: ID!,

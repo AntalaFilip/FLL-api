@@ -16,6 +16,7 @@ const rateLimit = new RateLimit({
 const typeDefs = require('./typedefs');
 const resolvers = require('./resolvers');
 const auth = require('./auth');
+const DatabaseAPI = require('./database');
 
 app.use(cors());
 if (process.env.NODE_ENV !== 'DEVELOPMENT') app.use(rateLimit);
@@ -25,6 +26,19 @@ app.use('/auth', auth.router);
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
+	dataSources: () => {
+		return {
+			database: new DatabaseAPI({
+				client: 'mysql',
+				connection: {
+					host: process.env.DBHOST,
+					user: process.env.DBUSER,
+					password: process.env.DBPASS,
+					database: process.env.DBNAME,
+				},
+			}),
+		};
+	},
 	context: ({ req }) => {
 		const token = req.headers.authorization || req.cookies.authToken;
 		const user = auth.auth(token);
@@ -33,18 +47,21 @@ const server = new ApolloServer({
 	},
 });
 
-server.applyMiddleware({ app });
+server.start()
+	.then(() => {
+		server.applyMiddleware({ app });
 
-console.log('Launching Apollo GraphQL Server...');
-console.time('start');
-app.listen(process.env.PORT, async () => {
-	const mode = process.env.NODE_ENV;
-	const ip = await publicIp.v4();
-	const port = process.env.PORT;
-	console.timeLog('start');
-	console.log(`Apollo Server running
-	 in ${mode} mode
-	 at ${mode !== 'DEVELOPMENT' ? `http://${ip}:${port}` : `http://localhost:${port}`}${server.graphqlPath}
-	 on ${process.env.USERNAME}@${process.env.COMPUTERNAME}`);
-});
+		console.log('Launching Apollo GraphQL Server...');
+		console.time('start');
+		app.listen(process.env.PORT, async () => {
+			const mode = process.env.NODE_ENV;
+			const ip = await publicIp.v4();
+			const port = process.env.PORT;
+			console.timeLog('start');
+			console.log(`Apollo Server running
+			in ${mode} mode
+			at ${mode !== 'DEVELOPMENT' ? `http://${ip}:${port}` : `http://localhost:${port}`}${server.graphqlPath}
+			on ${process.env.USERNAME}@${process.env.COMPUTERNAME}`);
+		});
+	});
 global.server = server;

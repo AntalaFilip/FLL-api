@@ -2,15 +2,7 @@ const knex = require("../knex");
 const { facilityDataParser } = require("./parsers");
 
 const getFacility = async (parent, args, context) => {
-	let query = knex
-		.select(
-			'f.id AS facility_id',
-			'f.name AS facility_name',
-		)
-		.from('facilities AS f');
-
-	if (args.id) query = query.where('c.id', args.id);
-	const result = await query;
+	const result = await context.dataSources.database.getFacility(args.id);
 
 	const data = facilityDataParser(result);
 

@@ -3,6 +3,7 @@ const knex = require('../knex');
 const { resolveUtils } = require('../utils');
 const axios = require('axios').default;
 const GoogleGeocodingApi = axios.create({ baseURL: 'https://maps.googleapis.com/maps/api/geocode/json', params: { key: process.env.MAPS_GEOCODING_KEY } });
+const { playgroundDataParser } = require('./parsers');
 
 const addPlayground = async (parent, args, context) => {
 	if (!context.user) throw new AuthenticationError();
@@ -25,7 +26,7 @@ const addPlayground = async (parent, args, context) => {
 	let response;
 	// Query the Google Maps geocoding API to get complete location data
 	if (args.location.address) {
-		response = await GoogleGeocodingApi.get('https://maps.googleapis.com/maps/api/geocode/json', { params: { address: args.location.address } });
+		response = await GoogleGeocodingApi.get('https://maps.googleapis.com/maps/api/geocode/json', { params: { address: args.location.address, type: 'street_address' } });
 	}
 	else if (args.location.latitude && args.location.longtitude) {
 		response = await GoogleGeocodingApi.get('https://maps.googleapis.com/maps/api/geocode/json', { params: { latlng: args.location.latitude + ',' + args.location.longtitude, type: 'street_address' } });
@@ -61,8 +62,8 @@ const addPlayground = async (parent, args, context) => {
 	// Insert all the categories into the table
 	await knex.batchInsert('categories_to_playground', categoryIds.map((ctgId) => ({ category_id: ctgId, playground_id: pgid })));
 
-	const playgroundData = (await knex.select().from('playgrounds').where({ id: pgid }))[0];
-	return playgroundData;
+	const playgroundData = (await context.dataSources.database.getPlayground(pgid));
+	return playgroundDataParser(playgroundData)[0];
 };
 
 module.exports = addPlayground;
