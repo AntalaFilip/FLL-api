@@ -64,7 +64,6 @@ const typeDefs = gql`
 	type Category {
 		id: ID!,
 		name: String!,
-		facilities: [Facility!],
 	}
 	type Facility {
 		id: ID!,
