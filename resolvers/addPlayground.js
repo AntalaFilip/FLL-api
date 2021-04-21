@@ -52,7 +52,7 @@ const addPlayground = async (parent, args, context) => {
 		latitude: result.geometry.location.lat,
 		longtitude: result.geometry.location.lng,
 		place_id: result.place_id,
-		plus_code: result.plus_code.global_code,
+		plus_code: result.plus_code ? result.plus_code.global_code : null,
 		addedby: context.user.id,
 	};
 
