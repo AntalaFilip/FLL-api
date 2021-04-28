@@ -16,6 +16,9 @@ class DatabaseAPI extends SQLDataSource {
 				this.knex.raw('JSON_ARRAYAGG(c.id) AS category_ids'),
 				this.knex.raw('JSON_ARRAYAGG(c.name) AS category_names'),
 
+				this.knex.raw('JSON_ARRAYAGG(f.id) AS facility_ids'),
+				this.knex.raw('JSON_ARRAYAGG(f.name) AS facility_names'),
+
 				'u.id AS user_id',
 				'u.username AS user_username',
 				'u.name AS user_name',
@@ -25,6 +28,8 @@ class DatabaseAPI extends SQLDataSource {
 			.from('playgrounds AS p')
 			.join('categories_to_playground AS ctp', 'ctp.playground_id', '=', 'p.id')
 			.join('categories AS c', 'ctp.category_id', '=', 'c.id')
+			.join('facilities_to_playground AS ftp', 'ftp.playground_id', '=', 'p.id')
+			.join('facilities AS f', 'ftp.facility_id', '=', 'f.id')
 			.join('users AS u', 'u.id', '=', 'p.addedby')
 			.groupBy('p.id', 'u.id');
 

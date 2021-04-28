@@ -22,6 +22,7 @@ const typeDefs = gql`
 		name: String!,
 		description: String!,
 		categoryIds: [Int!]!,
+		facilityIds: [Int!]!,
 	}
 	input PlaygroundAddressInput {
 		address: String!,

@@ -10,9 +10,9 @@ const addPlayground = async (parent, args, context) => {
 	// TODO: add permission checking
 
 	/**
-	 * @type {{name: string, desc: string, ctgIds: number[]}}
+	 * @type {{name: string, description: string, categoryIds: number[], facilityIds: number[] }}
 	 */
-	const { name, description, categoryIds } = args.base;
+	const { name, description, categoryIds, facilityIds } = args.base;
 
 	// Check if the playground name is available
 	const pExists = await resolveUtils.exists({ name }, 'playgrounds');
@@ -61,6 +61,7 @@ const addPlayground = async (parent, args, context) => {
 
 	// Insert all the categories into the table
 	await knex.batchInsert('categories_to_playground', categoryIds.map((ctgId) => ({ category_id: ctgId, playground_id: pgid })));
+	await knex.batchInsert('facilities_to_playground', facilityIds.map((facId) => ({ facility_id: facId, playground_id: pgid })));
 
 	const playgroundData = (await context.dataSources.database.getPlayground(pgid));
 	return playgroundDataParser(playgroundData)[0];
