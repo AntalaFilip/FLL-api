@@ -8,7 +8,6 @@ function playgroundDataParser(data) {
 		const filteredCtgNames = Array.from(new Set(JSON.parse(val.category_names)));
 		const filteredFacIds = Array.from(new Set(JSON.parse(val.facility_ids)));
 		const filteredFacNames = Array.from(new Set(JSON.parse(val.facility_names)));
-		console.log(val.playground_id, filteredCtgIds, 'f', filteredFacIds);
 		const obj = {
 			id: val.playground_id,
 			name: val.playground_name,
@@ -40,7 +39,6 @@ function playgroundDataParser(data) {
 				role: val.user_role,
 			},
 		};
-		console.log(obj);
 		return obj;
 	});
 }
